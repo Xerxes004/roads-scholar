@@ -23,14 +23,7 @@ public class RoadsScholar
     public static void main(String[] args)
     {
         // TODO code application logic here
-        RoadsScholar thing = new RoadsScholar();
-        Road[] roads = thing.parseInput("input.txt");
-        for(int i = 0; i < roads.length; i++)
-        {
-            System.out.println(
-                    "Start: " + roads[i].start() + " End: " + roads[i].end() 
-                            + " Length: " + roads[i].length());
-        }
+
     }
     
 
