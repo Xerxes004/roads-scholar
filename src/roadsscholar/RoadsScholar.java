@@ -1,9 +1,8 @@
 package roadsscholar;
 
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.File;
+import java.util.Scanner;
 
 
 /**
@@ -24,71 +23,55 @@ public class RoadsScholar
     public static void main(String[] args)
     {
         // TODO code application logic here
+        RoadsScholar thing = new RoadsScholar();
+        Road[] roads = thing.parseInput("input.txt");
+        for(int i = 0; i < roads.length; i++)
+        {
+            System.out.println(
+                    "Start: " + roads[i].start() + " End: " + roads[i].end() 
+                            + " Length: " + roads[i].length());
+        }
     }
     
 
     //Method to parse the input file
     private Road[] parseInput(String input)
     {
-        BufferedReader in = null;
+        Scanner in = null;
         Road allRoads[] = null; 
         try{
-            in = new BufferedReader(new FileReader(input));
+            in = new Scanner(new File(input));
         } catch (Exception e) {
             System.out.println("File not found");
         }
-        int numIn = 0;
-        try {
-            numIn = in.read();
-            this.numIntersect = numIn;
-            
-            numIn = in.read();
-            int numRoads = numIn;
-            //Create array with correct size
-            allRoads = new Road[numRoads];
 
-            numIn = in.read();
-            int numCity = numIn;
-            //Create an array with the correct size
-            this.cities = new City[numCity];
-            
-            for(int i = 0; i < numRoads; i++) 
-            {
-                numIn = in.read();
-                int start = numIn;
-                numIn = in.read();
-                int end = numIn;
-                char[] inBuffer = new char[1];
-                in.read(inBuffer, 0, 1);
-                double length = Double.valueOf(Character.toString(inBuffer[0]));
+        this.numIntersect =  in.nextInt();
+        int numRoads = in.nextInt();
+        allRoads = new Road[numRoads];
 
-                allRoads[i] = new Road(start, end, length);
-            }
-            
-            for(int i = 0; i < numCity; i++) 
-            {
-                int inter = in.read();
-                String name = in.readLine();
-                this.cities[i] = new City(inter, name);
-            }
-            
-            int numSign = in.read();
-            this.signs = new Sign[numSign];
-            for(int i = 0; i < numSign; i++) 
-            {
-                numIn = in.read();
-                int start = numIn;
-                numIn = in.read();
-                int end = numIn;
-                char[] inBuffer = new char[1];
-                in.read(inBuffer, 0, 1);
-                double length = Double.valueOf(Character.toString(inBuffer[0]));
-                
-                this.signs[i] = new Sign(start, end, length);
-            }
-            
-        } catch (IOException ex) {
-            System.out.println("Incorrect input");
+        int numCity = in.nextInt();
+        this.cities = new City[numCity];
+        for(int i = 0; i < numRoads; i++)
+        {
+            int start = in.nextInt();
+            int end = in.nextInt();
+            double length = in.nextDouble();
+            allRoads[i] = new Road(start, end, length);
+        }
+        for(int i = 0; i < numCity; i++)
+        {
+            int inter = in.nextInt();
+            String name = in.next();
+            this.cities[i] = new City(inter, name);
+        }
+        int numSign = in.nextInt();
+        this.signs = new Sign[numSign];
+        for(int i = 0; i < numSign; i++)
+        {
+            int start = in.nextInt(); 
+            int end = in.nextInt();
+            double length = in.nextDouble();
+            this.signs[i] = new Sign(start, end, length);
         }
         
         return allRoads;
