@@ -13,34 +13,17 @@ import java.util.List;
  *
  * @author wes
  */
-public class Sign
+public class Sign extends Road
 {
     public Sign(int startPoint, int endPoint, Double length)
     {
-        this.startPoint = startPoint;
-        this.endPoint = endPoint;
-        this.length = length;
+        super(startPoint, endPoint, length);
         
         this.distanceInfo = new ArrayList<>();
     }
     
-    private final int startPoint;
-    private final int endPoint;
-    private final Double length;
     private final List<CityDistanceTuple> distanceInfo;
     
-    public int start()
-    {
-        return this.startPoint;
-    }
-    public int end()
-    {
-        return this.endPoint;
-    }
-    public Double length()
-    {
-        return this.length;
-    }
     public void addInfo(String name, int distance)
     {
         for (int i = 0; i < distanceInfo.size(); i++)

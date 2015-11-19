@@ -13,17 +13,26 @@
 
 package roadsscholar;
 
+import java.util.ArrayList;
+
 public class Intersection 
 {
     public Intersection(int intersection)
     {
         this.intersection = intersection;
+        this.roads = new ArrayList<>();
+        this.roads.clear();
     }
 
+    private final int intersection;
+    private final ArrayList<Road> roads;
+    
     public int intersection() 
     {
         return this.intersection;
     }
-    
-    private final int intersection;
+    public void addRoad(Road newRoad)
+    {
+        this.roads.add(newRoad);
+    }
 }

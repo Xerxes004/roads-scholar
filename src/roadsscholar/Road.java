@@ -6,13 +6,9 @@
 
 package roadsscholar;
 
-/**
- *
- * @author wes
- */
 public class Road
 {
-    public Road(int startPoint, int endPoint, double length)
+    public Road(int startPoint, int endPoint, Double length)
     {
         this.startPoint = startPoint;
         this.endPoint = endPoint;
@@ -21,7 +17,7 @@ public class Road
     
     private final int startPoint;
     private final int endPoint;
-    private final double length;
+    private final Double length;
     
     public int start()
     {
