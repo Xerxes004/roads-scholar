@@ -12,7 +12,7 @@ package roadsscholar;
  */
 public class Road
 {
-    public Road(int startPoint, int endPoint, float length)
+    public Road(int startPoint, int endPoint, double length)
     {
         this.startPoint = startPoint;
         this.endPoint = endPoint;
@@ -21,7 +21,7 @@ public class Road
     
     private final int startPoint;
     private final int endPoint;
-    private final float length;
+    private final double length;
     
     public int start()
     {
@@ -31,7 +31,7 @@ public class Road
     {
         return this.endPoint;
     }  
-    public float length()
+    public double length()
     {
         return this.length;
     } 

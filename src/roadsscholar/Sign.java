@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class Sign
 {
-    public Sign(int startPoint, int endPoint, float length)
+    public Sign(int startPoint, int endPoint, Double length)
     {
         this.startPoint = startPoint;
         this.endPoint = endPoint;
@@ -26,7 +26,7 @@ public class Sign
     
     private final int startPoint;
     private final int endPoint;
-    private final float length;
+    private final Double length;
     private final List<CityDistanceTuple> distanceInfo;
     
     public int start()
@@ -37,7 +37,7 @@ public class Sign
     {
         return this.endPoint;
     }
-    public float length()
+    public Double length()
     {
         return this.length;
     }

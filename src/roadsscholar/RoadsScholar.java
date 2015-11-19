@@ -1,21 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package roadsscholar;
+
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  *
  * @author wes
  */
+
+
 public class RoadsScholar
 {
     
@@ -30,6 +26,7 @@ public class RoadsScholar
         // TODO code application logic here
     }
     
+
     //Method to parse the input file
     private Road[] parseInput(String input)
     {
@@ -63,7 +60,7 @@ public class RoadsScholar
                 int end = numIn;
                 char[] inBuffer = new char[1];
                 in.read(inBuffer, 0, 1);
-                Double length = Double.valueOf(Character.toString(inBuffer[0]));
+                double length = Double.valueOf(Character.toString(inBuffer[0]));
 
                 allRoads[i] = new Road(start, end, length);
             }
@@ -85,7 +82,7 @@ public class RoadsScholar
                 int end = numIn;
                 char[] inBuffer = new char[1];
                 in.read(inBuffer, 0, 1);
-                Double length = Double.valueOf(Character.toString(inBuffer[0]));
+                double length = Double.valueOf(Character.toString(inBuffer[0]));
                 
                 this.signs[i] = new Sign(start, end, length);
             }
@@ -97,4 +94,86 @@ public class RoadsScholar
         return allRoads;
     }
     
+
+    public double[][] solve(String fileName)
+    {
+        Road roads[] = null;// parseInputFile(fileName);
+        
+        double adjacencyMatrix[][] = makeWeightedAdjacencyMatrix(roads);
+        
+        double best[][] = floydWarshall(adjacencyMatrix);
+        
+        return best;
+    }
+    
+    private double[][] floydWarshall(double adjacencyMatrix[][])
+    {
+        int n = adjacencyMatrix.length;
+        double best[][][] = new double[n][n][n];
+        int path[][] = new int[n][n];
+        for (int i = 0; i < adjacencyMatrix.length; i++)
+        {
+            for (int j = 0; i < adjacencyMatrix.length; i++)
+            {
+                path[i][j] = -1;
+                
+                for (int k = 0; k < adjacencyMatrix.length; k++)
+                {
+                    best[i][j][k] = -1;
+                }
+            }
+        }
+        
+        best[0] = adjacencyMatrix;
+        int numVertices = adjacencyMatrix.length;
+        
+        for (int k = 0; k < numVertices; k++)
+        {
+            for (int u = 0; u < numVertices; u++)
+            {
+                for (int v = 0; v < numVertices; v++)
+                {
+                    best[k][u][v] = best[k - 1][u][v];
+                    
+                    if ((best[k - 1][u][k] + best[k - 1][k][v]) < best[k][u][v])
+                    {
+                        best[k][u][v] = best[k - 1][u][k] + best[k - 1][k][v];
+                        path[u][v] = k;
+                    }
+                }
+            }
+        }
+        
+        return best[n];
+    }
+    
+    private double[][] makeWeightedAdjacencyMatrix(Road roads[])
+    {
+        // defaults to being filled with 0's by the Java language spec
+        double adjacencyMatrix[][] = new double[roads.length][roads.length];
+        
+        for (Road road : roads)
+        {
+            adjacencyMatrix[road.start()][road.end()] = road.length();
+            adjacencyMatrix[road.end()][road.start()] = road.length();
+        }
+        
+        printMatrix(adjacencyMatrix);
+        
+        return adjacencyMatrix;
+    }
+    
+    private void printMatrix(double matrix[][])
+    {
+        System.out.println("----");
+        for (double j[] : matrix)
+        {
+            for (double i : j)
+            {
+                System.out.print(i);
+            }
+            System.out.println("");
+        }
+    }
+
 }
