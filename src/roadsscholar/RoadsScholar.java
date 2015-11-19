@@ -117,13 +117,17 @@ public class RoadsScholar
         Double adjacencyMatrix[][] = makeAdjacencyMatrix();
         Integer predMatrix[][] = makePredecessorMatrix(adjacencyMatrix);
 
-        Double best[][] = floydWarshall(adjacencyMatrix);
+        Double best[][] = floydWarshall(adjacencyMatrix, predMatrix);
 
         return best;
     }
 
-    private Double[][] floydWarshall(Double adjacencyMatrix[][])
+    private Double[][] floydWarshall(Double adjacencyMatrix[][],
+                                     Integer predecessorMatrix[][])
     {
+        printMatrix(adjacencyMatrix);
+        printMatrix(predecessorMatrix);
+        
         int n = adjacencyMatrix.length;
         Double best[][][] = new Double[n][n][n];
         Integer path[][] = new Integer[n][n];
@@ -174,8 +178,6 @@ public class RoadsScholar
             }
         }
         
-        System.out.println(roads.length + " roads");
-        
         for (int intersection = 0; intersection < numIntersects; intersection++)
         {
             for (Road adjoiningRoad : this.roads)
@@ -187,8 +189,6 @@ public class RoadsScholar
                 }
             }
         }
-
-        printMatrix("Adjecency", matrix);
 
         return matrix;
     }
@@ -209,8 +209,6 @@ public class RoadsScholar
                 }
             }
         }
-        
-        printMatrix("Predecessor", pMatrix);
         
         return pMatrix;
     }
