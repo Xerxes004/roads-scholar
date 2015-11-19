@@ -30,8 +30,10 @@ public class RoadsScholar
     public static void main(String[] args)
     {
         RoadsScholar problem = new RoadsScholar();
-        problem.solve("input.txt");
-
+        RSSolution solution = problem.solve("input.txt");
+        
+        problem.printMatrix("Best answer", solution.answer());
+        problem.printMatrix("Final Predicessor Matrix", solution.predMatrix());
     }
 
     //Method to parse the input file
@@ -107,7 +109,7 @@ public class RoadsScholar
         return true;
     }
 
-    public Double[][] solve(String fileName)
+    public RSSolution solve(String fileName)
     {
         if (!parseInput(fileName))
         {
@@ -117,15 +119,13 @@ public class RoadsScholar
         Double adjacencyMatrix[][] = makeAdjacencyMatrix();
         Integer predMatrix[][] = makePredecessorMatrix(adjacencyMatrix);
 
-        Double best[][] = floydWarshall(adjacencyMatrix, predMatrix);
+        RSSolution solution = floydWarshall(adjacencyMatrix, predMatrix);
 
-        printMatrix("Best answer", best);
-        
-        return best;
+        return solution;
     }
 
-    private Double[][] floydWarshall(Double adjacencyMatrix[][],
-                                     Integer predecessorMatrix[][])
+    private RSSolution floydWarshall(Double adjacencyMatrix[][],
+                                               Integer predecessorMatrix[][])
     {
         int n = adjacencyMatrix.length;
         Double  best[][][] = new Double [2][n][n];
@@ -138,6 +138,7 @@ public class RoadsScholar
         pred[1] = predecessorMatrix;
         
         int numVertices = adjacencyMatrix.length;
+        int solutionIndex = 0;
 
         for (int k = 0; k < numVertices; k++)
         {
@@ -166,14 +167,19 @@ public class RoadsScholar
                             best[i][u][v] = best[j][u][k] + best[j][k][v];
                             pred[i][u][v] = k;
                         }
+                        
+                        // keeps track of the last i value so that the correct
+                        // answers can be sent back to the user.
+                        if (v == numVertices - 1)
+                        {
+                            solutionIndex = i;
+                        }
                     }
                 }
             }
         }
         
-        printMatrix("Final Predicessor", pred[(numVertices - 1) % 2]);
-
-        return best[(numVertices - 1) % 2];
+        return new RSSolution(best[solutionIndex], pred[solutionIndex]);
     }
 
     
