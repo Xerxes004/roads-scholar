@@ -119,32 +119,24 @@ public class RoadsScholar
 
         Double best[][] = floydWarshall(adjacencyMatrix, predMatrix);
 
+        printMatrix("Best answer", best);
+        
         return best;
     }
 
     private Double[][] floydWarshall(Double adjacencyMatrix[][],
                                      Integer predecessorMatrix[][])
     {
-        printMatrix(adjacencyMatrix);
-        printMatrix(predecessorMatrix);
-        
         int n = adjacencyMatrix.length;
-        Double best[][][] = new Double[n][n][n];
-        Integer path[][] = new Integer[n][n];
-        for (int i = 0; i < adjacencyMatrix.length; i++)
-        {
-            for (int j = 0; i < adjacencyMatrix.length; i++)
-            {
-                path[i][j] = null;
-
-                for (int k = 0; k < adjacencyMatrix.length; k++)
-                {
-                    best[i][j][k] = null;
-                }
-            }
-        }
-
+        Double  best[][][] = new Double [2][n][n];
+        Integer pred[][][] = new Integer[2][n][n];
+        
         best[0] = adjacencyMatrix;
+        best[1] = adjacencyMatrix;
+        
+        pred[0] = predecessorMatrix;
+        pred[1] = predecessorMatrix;
+        
         int numVertices = adjacencyMatrix.length;
 
         for (int k = 0; k < numVertices; k++)
@@ -153,39 +145,57 @@ public class RoadsScholar
             {
                 for (int v = 0; v < numVertices; v++)
                 {
-                    best[k][u][v] = best[k - 1][u][v];
-
-                    if ((best[k - 1][u][k] + best[k - 1][k][v]) < best[k][u][v])
+                    // we only need to keep two matrices in memory and swap
+                    // between them. i and j alternate.
+                    int i = k % 2;
+                    int j = (i == 0) ? 1 : 0;
+                    
+                    best[i][u][v] = best[j][u][v];
+                    
+                    // null represents infinity
+                    if (best[i][u][k] != null && best[i][k][v] != null)
                     {
-                        best[k][u][v] = best[k - 1][u][k] + best[k - 1][k][v];
-                        path[u][v] = k;
+                        // if this spot is infinite, anything is better
+                        if (best[i][u][v] == null)
+                        {
+                            best[i][u][v] = best[j][u][k] + best[j][k][v];
+                            pred[i][u][v] = k;
+                        }
+                        else if ((best[j][u][k] + best[j][k][v]) < best[i][u][v])
+                        {
+                            best[i][u][v] = best[j][u][k] + best[j][k][v];
+                            pred[i][u][v] = k;
+                        }
                     }
                 }
             }
         }
+        
+        printMatrix("Final Predicessor", pred[(numVertices - 1) % 2]);
 
-        return best[n];
+        return best[(numVertices - 1) % 2];
     }
 
+    
     private Double[][] makeAdjacencyMatrix()
     {
-        Double matrix[][] = new Double[numIntersects][numIntersects];
-        for (int i = 0; i < matrix.length; i++)
+        Double[][] matrix = new Double[numIntersects][numIntersects];
+        for (Double[] matrix1 : matrix)
         {
             for (int j = 0; j < matrix.length; j++)
             {
-                matrix[i][j] = null;
+                matrix1[j] = null;
             }
         }
         
         for (int intersection = 0; intersection < numIntersects; intersection++)
         {
-            for (Road adjoiningRoad : this.roads)
+            for (Road road : this.roads)
             {
-                if (intersection == adjoiningRoad.start())
+                if (intersection == road.start())
                 {
-                    matrix[intersection][adjoiningRoad.end()] = adjoiningRoad.length();
-                    matrix[adjoiningRoad.end()][intersection] = adjoiningRoad.length();
+                    matrix[intersection][road.end()] = road.length();
+                    matrix[road.end()][intersection] = road.length();
                 }
             }
         }
@@ -193,9 +203,14 @@ public class RoadsScholar
         return matrix;
     }
     
-    private Integer[][] makePredecessorMatrix(Double adjMatrix[][])
+    /**
+     * Makes a predecessor matrix from an adjacency matrix.
+     * @param aMatrix the adjacency matrix of the graph
+     * @return the predecessor matrix of the adjacency matrix
+     */
+    private Integer[][] makePredecessorMatrix(Double[][] aMatrix)
     {
-        Integer pMatrix[][] = new Integer[adjMatrix.length][adjMatrix.length];
+        Integer pMatrix[][] = new Integer[aMatrix.length][aMatrix.length];
         
         for (int i = 0; i < pMatrix.length; i++)
         {
@@ -203,9 +218,9 @@ public class RoadsScholar
             {
                 pMatrix[i][j] = null;
                 
-                if (adjMatrix[i][j] != null)
+                if (aMatrix[i][j] != null)
                 {
-                    pMatrix[i][j] = j;
+                    pMatrix[i][j] = i;
                 }
             }
         }
@@ -238,6 +253,7 @@ public class RoadsScholar
             }
             System.out.println("");
         }
+        System.out.println("");
     }
     
     private void printMatrix(Double matrix[][])
