@@ -18,7 +18,7 @@ public class RoadsScholar
         this.numIntersects = 0;
         this.roads = new Road[0];
     }
-    
+
     private City cities[];
     private Sign signs[];
     private int numIntersects;
@@ -31,7 +31,7 @@ public class RoadsScholar
     {
         RoadsScholar problem = new RoadsScholar();
         RSSolution solution = problem.solve("input.txt");
-        
+
         problem.printMatrix("Best answer", solution.answer());
         problem.printMatrix("Final Predicessor Matrix", solution.predMatrix());
     }
@@ -42,7 +42,7 @@ public class RoadsScholar
         try
         {
             Scanner in = new Scanner(new File(input));
-            
+
             if (in.hasNextInt())
             {
                 this.numIntersects = in.nextInt();
@@ -51,7 +51,7 @@ public class RoadsScholar
             {
                 return false;
             }
-            
+
             if (in.hasNextInt())
             {
                 this.roads = new Road[in.nextInt()];
@@ -60,7 +60,7 @@ public class RoadsScholar
             {
                 return false;
             }
-            
+
             if (in.hasNextInt())
             {
                 this.cities = new City[in.nextInt()];
@@ -75,7 +75,7 @@ public class RoadsScholar
                 int start = in.nextInt();
                 int end = in.nextInt();
                 double length = in.nextDouble();
-                
+
                 this.roads[i] = new Road(start, end, length);
             }
 
@@ -83,7 +83,7 @@ public class RoadsScholar
             {
                 int intersectionNum = in.nextInt();
                 String name = in.next();
-                
+
                 this.cities[i] = new City(intersectionNum, name);
             }
 
@@ -97,7 +97,7 @@ public class RoadsScholar
                 int start = in.nextInt();
                 int end = in.nextInt();
                 double length = in.nextDouble();
-                
+
                 this.signs[i] = new Sign(start, end, length);
             }
         }
@@ -125,18 +125,18 @@ public class RoadsScholar
     }
 
     private RSSolution floydWarshall(Double adjacencyMatrix[][],
-                                               Integer predecessorMatrix[][])
+                                     Integer predecessorMatrix[][])
     {
         int n = adjacencyMatrix.length;
-        Double  best[][][] = new Double [2][n][n];
+        Double best[][][] = new Double[2][n][n];
         Integer pred[][][] = new Integer[2][n][n];
-        
+
         best[0] = adjacencyMatrix;
         best[1] = adjacencyMatrix;
-        
+
         pred[0] = predecessorMatrix;
         pred[1] = predecessorMatrix;
-        
+
         int numVertices = adjacencyMatrix.length;
         int solutionIndex = 0;
 
@@ -150,9 +150,9 @@ public class RoadsScholar
                     // between them. i and j alternate.
                     int i = k % 2;
                     int j = (i == 0) ? 1 : 0;
-                    
+
                     best[i][u][v] = best[j][u][v];
-                    
+
                     // null represents infinity
                     if (best[i][u][k] != null && best[i][k][v] != null)
                     {
@@ -167,7 +167,7 @@ public class RoadsScholar
                             best[i][u][v] = best[j][u][k] + best[j][k][v];
                             pred[i][u][v] = k;
                         }
-                        
+
                         // keeps track of the last i value so that the correct
                         // answers can be sent back to the user.
                         if (v == numVertices - 1)
@@ -178,11 +178,10 @@ public class RoadsScholar
                 }
             }
         }
-        
+
         return new RSSolution(best[solutionIndex], pred[solutionIndex]);
     }
 
-    
     private Double[][] makeAdjacencyMatrix()
     {
         Double[][] matrix = new Double[numIntersects][numIntersects];
@@ -193,7 +192,7 @@ public class RoadsScholar
                 matrix1[j] = null;
             }
         }
-        
+
         for (int intersection = 0; intersection < numIntersects; intersection++)
         {
             for (Road road : this.roads)
@@ -208,36 +207,37 @@ public class RoadsScholar
 
         return matrix;
     }
-    
+
     /**
      * Makes a predecessor matrix from an adjacency matrix.
+     *
      * @param aMatrix the adjacency matrix of the graph
      * @return the predecessor matrix of the adjacency matrix
      */
     private Integer[][] makePredecessorMatrix(Double[][] aMatrix)
     {
         Integer pMatrix[][] = new Integer[aMatrix.length][aMatrix.length];
-        
+
         for (int i = 0; i < pMatrix.length; i++)
         {
             for (int j = 0; j < pMatrix.length; j++)
             {
                 pMatrix[i][j] = null;
-                
+
                 if (aMatrix[i][j] != null)
                 {
                     pMatrix[i][j] = i;
                 }
             }
         }
-        
+
         return pMatrix;
     }
 
     private void printMatrix(Integer matrix[][])
     {
         System.out.println("----");
-        
+
         String format = "%-3s";
         System.out.printf(format, " ");
         for (int i = 0; i < matrix.length; i++)
@@ -245,44 +245,44 @@ public class RoadsScholar
             System.out.printf(format, i);
         }
         System.out.println("");
-        
+
         int k = 0;
         for (Integer j[] : matrix)
         {
             System.out.printf(format, k++);
-            
+
             for (Integer i : j)
             {
                 String s = "";
-                s += (i == null) ? "-" : (int)Math.ceil(i);
+                s += (i == null) ? "-" : (int) Math.ceil(i);
                 System.out.printf(format, s);
             }
             System.out.println("");
         }
         System.out.println("");
     }
-    
+
     private void printMatrix(Double matrix[][])
     {
         Integer intArray[][] = new Integer[matrix.length][matrix.length];
-        for(int i = 0; i < intArray.length; i++)
+        for (int i = 0; i < intArray.length; i++)
         {
             for (int j = 0; j < intArray.length; j++)
             {
-                intArray[i][j] = (matrix[i][j] != null) 
-                                 ? (int)Math.ceil(matrix[i][j]) 
-                                 : null;
+                intArray[i][j] = (matrix[i][j] != null) ?
+                     (int) Math.ceil(matrix[i][j]) :
+                     null;
             }
         }
         printMatrix(intArray);
     }
-    
+
     private void printMatrix(String title, Double matrix[][])
     {
         System.out.println(title);
         printMatrix(matrix);
     }
-    
+
     private void printMatrix(String title, Integer matrix[][])
     {
         System.out.println(title);
