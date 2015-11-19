@@ -10,22 +10,34 @@ public class RoadsScholar
         // TODO code application logic here
     }
     
-    public float[][] solve(String fileName)
+    public double[][] solve(String fileName)
     {
         Road roads[] = null;// parseInputFile(fileName);
         
-        float adjacencyMatrix[][] = makeWeightedAdjacencyMatrix(roads);
+        double adjacencyMatrix[][] = makeWeightedAdjacencyMatrix(roads);
         
-        float best[][] = floydWarshall(adjacencyMatrix);
+        double best[][] = floydWarshall(adjacencyMatrix);
         
         return best;
     }
     
-    private float[][] floydWarshall(float adjacencyMatrix[][])
+    private double[][] floydWarshall(double adjacencyMatrix[][])
     {
         int n = adjacencyMatrix.length;
-        float best[][][] = new float[n][n][n];
+        double best[][][] = new double[n][n][n];
         int path[][] = new int[n][n];
+        for (int i = 0; i < adjacencyMatrix.length; i++)
+        {
+            for (int j = 0; i < adjacencyMatrix.length; i++)
+            {
+                path[i][j] = -1;
+                
+                for (int k = 0; k < adjacencyMatrix.length; k++)
+                {
+                    best[i][j][k] = -1;
+                }
+            }
+        }
         
         best[0] = adjacencyMatrix;
         int numVertices = adjacencyMatrix.length;
@@ -50,15 +62,15 @@ public class RoadsScholar
         return best[n];
     }
     
-    private float[][] makeWeightedAdjacencyMatrix(Road roads[])
+    private double[][] makeWeightedAdjacencyMatrix(Road roads[])
     {
         // defaults to being filled with 0's by the Java language spec
-        float adjacencyMatrix[][] = new float[roads.length][roads.length];
+        double adjacencyMatrix[][] = new double[roads.length][roads.length];
         
         for (Road road : roads)
         {
             adjacencyMatrix[road.start()][road.end()] = road.length();
-            adjacencyMatrix[road.end()][road.start()]++;
+            adjacencyMatrix[road.end()][road.start()] = road.length();
         }
         
         printMatrix(adjacencyMatrix);
@@ -66,12 +78,12 @@ public class RoadsScholar
         return adjacencyMatrix;
     }
     
-    private void printMatrix(float matrix[][])
+    private void printMatrix(double matrix[][])
     {
         System.out.println("----");
-        for (float j[] : matrix)
+        for (double j[] : matrix)
         {
-            for (float i : j)
+            for (double i : j)
             {
                 System.out.print(i);
             }
