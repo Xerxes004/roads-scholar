@@ -304,11 +304,27 @@ public class RoadsScholar
                 int cityNum = this.cities[j].intersection();
                 if(current.start() != cityNum) 
                 {
-                    if(shortest[current.start()][cityNum] == current.end())
+                    int intersect = cityNum;
+                    boolean pathEnd = false;
+                    while(!pathEnd) 
                     {
-                        Double totalDist = distances[current.start()][cityNum] - current.length();
-                        long rounded = Math.round(totalDist);
-                        this.signs[i].addInfo(this.cities[j].name(), (int)rounded);
+                        
+                        if(shortest[current.start()][intersect] == current.end())
+                        {
+                            Double totalDist = distances[current.start()][cityNum] - current.length();
+                            long rounded = Math.round(totalDist);
+                            this.signs[i].addInfo(this.cities[j].name(), (int)rounded);
+                            pathEnd = true;
+                        } 
+                        else if(shortest[current.start()][intersect] == current.start()) 
+                        {
+                            pathEnd = true;
+                        }
+                        else
+                        {
+                            intersect = shortest[current.start()][intersect];
+                        }
+                        
                     }
                 }
             }
