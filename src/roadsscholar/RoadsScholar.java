@@ -15,13 +15,13 @@ public class RoadsScholar
     {
         this.cities = new City[0];
         this.signs = new Sign[0];
-        this.numIntersects = 0;
+        this.numIntxns = 0;
         this.roads = new Road[0];
     }
 
     private City cities[];
     private Sign signs[];
-    private int numIntersects;
+    private int numIntxns;
     private Road roads[];
 
     /**
@@ -33,43 +33,25 @@ public class RoadsScholar
         RSSolution solution = problem.solve("input.txt");
 
         problem.printMatrix("Best answer", solution.answer());
-        problem.printMatrix("Final Predicessor Matrix", solution.predMatrix());
+        problem.printMatrix("Final Predecessor Matrix", solution.predMatrix());
     }
 
-    //Method to parse the input file
-    private boolean parseInput(String input)
+    /**
+     * Parses the file specified.
+     * @param fileName the name of the input file
+     * @return whether the method failed or not
+     * Note: this method assumes that the input file is correct
+     */
+    private boolean parseInput(String fileName)
     {
         try
         {
-            Scanner in = new Scanner(new File(input));
+            Scanner in = new Scanner(new File(fileName));
 
-            if (in.hasNextInt())
-            {
-                this.numIntersects = in.nextInt();
-            }
-            else
-            {
-                return false;
-            }
-
-            if (in.hasNextInt())
-            {
-                this.roads = new Road[in.nextInt()];
-            }
-            else
-            {
-                return false;
-            }
-
-            if (in.hasNextInt())
-            {
-                this.cities = new City[in.nextInt()];
-            }
-            else
-            {
-                return false;
-            }
-
+            this.numIntxns = in.nextInt();
+            this.roads = new Road[in.nextInt()];
+            this.cities = new City[in.nextInt()];
+            
             for (int i = 0; i < this.roads.length; i++)
             {
                 int start = in.nextInt();
@@ -101,14 +83,21 @@ public class RoadsScholar
                 this.signs[i] = new Sign(start, end, length);
             }
         }
-        catch (FileNotFoundException e)
+        // lazy catch statement
+        catch (Exception e)
         {
             System.out.println(e.getMessage());
+            return false;
         }
 
         return true;
     }
 
+    /**
+     * 
+     * @param fileName
+     * @return 
+     */
     public RSSolution solve(String fileName)
     {
         if (!parseInput(fileName))
@@ -124,21 +113,20 @@ public class RoadsScholar
         return solution;
     }
 
-    private RSSolution floydWarshall(Double adjacencyMatrix[][],
-                                     Integer predecessorMatrix[][])
+    private RSSolution floydWarshall(Double[][] adjMatrix, Integer[][] predMatrix)
     {
-        int n = adjacencyMatrix.length;
+        int n = adjMatrix.length;
         Double best[][][] = new Double[2][n][n];
         Integer pred[][][] = new Integer[2][n][n];
 
-        best[0] = adjacencyMatrix;
-        best[1] = adjacencyMatrix;
+        best[0] = adjMatrix;
+        best[1] = adjMatrix;
 
-        pred[0] = predecessorMatrix;
-        pred[1] = predecessorMatrix;
+        pred[0] = predMatrix;
+        pred[1] = predMatrix;
 
-        int numVertices = adjacencyMatrix.length;
-        int solutionIndex = 0;
+        int numVertices = adjMatrix.length;
+        int solnIndex = 0;
 
         for (int k = 0; k < numVertices; k++)
         {
@@ -162,29 +150,36 @@ public class RoadsScholar
                             best[i][u][v] = best[j][u][k] + best[j][k][v];
                             pred[i][u][v] = k;
                         }
-                        else if ((best[j][u][k] + best[j][k][v]) < best[i][u][v])
+                        else if 
+                            ((best[j][u][k] + best[j][k][v]) < best[i][u][v])
                         {
                             best[i][u][v] = best[j][u][k] + best[j][k][v];
                             pred[i][u][v] = k;
                         }
 
-                        // keeps track of the last i value so that the correct
-                        // answers can be sent back to the user.
+                        // Stores the last i value so that the correct answers 
+                        // can be sent back to the user.
                         if (v == numVertices - 1)
                         {
-                            solutionIndex = i;
+                            solnIndex = i;
                         }
                     }
                 }
             }
         }
 
-        return new RSSolution(best[solutionIndex], pred[solutionIndex]);
+        return new RSSolution(best[solnIndex], pred[solnIndex]);
     }
 
+    /**
+     * 
+     * @return the adjacency matrix of roads
+     * Note: this method works only for undirected graphs
+     */
     private Double[][] makeAdjacencyMatrix()
     {
-        Double[][] matrix = new Double[numIntersects][numIntersects];
+        Double[][] matrix = new Double[this.numIntxns][this.numIntxns];
+        
         for (Double[] matrix1 : matrix)
         {
             for (int j = 0; j < matrix.length; j++)
@@ -193,14 +188,19 @@ public class RoadsScholar
             }
         }
 
-        for (int intersection = 0; intersection < numIntersects; intersection++)
+        for (int intxn = 0; intxn < this.numIntxns; intxn++)
         {
             for (Road road : this.roads)
             {
-                if (intersection == road.start())
+                if (intxn == road.start())
                 {
-                    matrix[intersection][road.end()] = road.length();
-                    matrix[road.end()][intersection] = road.length();
+                    matrix[intxn][road.end()] = road.length();
+                    matrix[road.end()][intxn] = road.length();
+                }
+                if (intxn == road.end())
+                {
+                    matrix[intxn][road.end()] = 0.0;
+                    matrix[road.end()][intxn] = 0.0;
                 }
             }
         }
@@ -227,6 +227,10 @@ public class RoadsScholar
                 if (aMatrix[i][j] != null)
                 {
                     pMatrix[i][j] = i;
+                }
+                if (i == j)
+                {
+                    pMatrix[i][j] = 0;
                 }
             }
         }

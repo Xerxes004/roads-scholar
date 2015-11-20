@@ -9,10 +9,6 @@ package roadsscholar;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author wes
- */
 public class Sign extends Road
 {
     public Sign(int startPoint, int endPoint, Double length)
@@ -45,7 +41,7 @@ public class Sign extends Road
             {
                 info += " ";
             }
-            info += c.distance();
+            info += c.distance() + "\n";
         }
         
         return info;
