@@ -1,15 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * This class encapsulates a city name and a distance, and is used to store
+ * information in a Sign.
+ * 
+ * @author Wesley Kelly
+ * @version 1.0
+ *
+ * File: CityDistanceTuple.java 
+ * Created: 15 November 2015
+ *
+ * Copyright 2015 Cedarville University, its Computer Science faculty, and the
+ * authors. All rights reserved.
  */
 
 package roadsscholar;
 
-/**
- *
- * @author wes
- */
 public class CityDistanceTuple
 {
     public CityDistanceTuple(String name, int distance)

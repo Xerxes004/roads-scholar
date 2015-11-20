@@ -1,13 +1,25 @@
+/**
+ * This class solves the Roads Scholar problem.
+ * 
+ * @author Wesley Kelly
+ * @version 1.0
+ *
+ * File: RoadsScholar.java 
+ * Created: 15 November 2015
+ *
+ * Copyright 2015 Cedarville University, its Computer Science faculty, and the
+ * authors. All rights reserved.
+ * 
+ * Description: This class uses the Floyd-Warshall algorithm to solve the SSSP
+ * problem. The answer to the solve method returns the signs being place on the
+ * map.
+ */
 
 package roadsscholar;
 
 import java.io.File;
 import java.util.Scanner;
 
-/**
- *
- * @author wes
- */
 public class RoadsScholar
 {
     public RoadsScholar()
@@ -23,7 +35,7 @@ public class RoadsScholar
     private Sign signs[];
     private int numIntxns;
     private Road roads[];
-    private RSSolution solution;
+    private SSSPSolution solution;
 
     /**
      * @param args the command line arguments
@@ -48,6 +60,99 @@ public class RoadsScholar
     public Integer[][] predMatrix()
     {
         return this.solution.predMatrix();
+    }
+    
+    /**
+     * Solves the input file.
+     *
+     * @param fileName name of input file to solve
+     * @return a String version of the sign info generated from the problem,
+     * null if the input file fails.
+     */
+    public String solve(String fileName)
+    {
+        if (!parseInput(fileName))
+        {
+            return null;
+        }
+
+        Double adjacencyMatrix[][] = makeAdjacencyMatrix();
+        Integer predMatrix[][] = makePredecessorMatrix(adjacencyMatrix);
+
+        this.solution = floydWarshall(adjacencyMatrix, predMatrix);
+
+        return findSignInfo(adjacencyMatrix, predMatrix);
+    }
+    
+     /**
+     * Prints a matrix with a title. Generic because it saves work from
+     * overloading.
+     * 
+     * @param <J> the type of element to print
+     * @param title title of the matrix
+     * @param matrix matrix of J[n][n]
+     */
+    public <J> void printMatrix(String title, J matrix[][])
+    {
+        System.out.println(title + "\n----");
+        printMatrix(matrix);
+    }
+    
+    /**
+     * Prints out an array to the console.
+     * 
+     * @param <T> the type of element to print
+     * @param matrix matrix of T[n][k]
+     */
+    public <T> void printMatrix(T matrix[][])
+    {
+        int longestString = 0;
+        
+        for (T[] m : matrix)
+        {
+            for (T j : m)
+            {
+                if (j.toString().length() > longestString)
+                {
+                    longestString = j.toString().length();
+                }
+            }
+        }
+        String matrixLength = "";
+        matrixLength += matrix.length;
+        
+        if (longestString < matrixLength.length())
+        {
+            longestString = matrix.length;
+        }
+        
+        // limit the length of a string to 4 characters
+        longestString = (longestString > 4) ? 4 : longestString;
+        
+        String format = "%-" + (longestString + 1) + "." + longestString + "s";
+        
+        System.out.printf(format, " ");
+        for (int i = 0; i < matrix.length; i++)
+        {
+            System.out.printf(format, i);
+        }
+        System.out.println("");
+
+        int k = 0;
+
+        for (T j[] : matrix)
+        {
+            System.out.printf(format, k++);
+
+            for (T i : j)
+            {
+                String s = "";
+                s += (i == null) ? "-" : i;
+                System.out.printf(format, s);
+            }
+            System.out.println("");
+        }
+        System.out.println("");
     }
 
     /**
@@ -109,37 +214,22 @@ public class RoadsScholar
     }
 
     /**
-     * Solves the input file.
-     *
-     * @param fileName name of input file to solve
-     * @return the sign
+     * An implementation of the Floyd-Warshall algorithm.
+     * 
+     * @param aMatrix the initial Double[][] adjacency matrix of the graph
+     * @param pMatrix the initial Integer[][] predecessor matrix of the graph
+     * @return the SSSPSolution form of the solution to the inputs
      */
-    public String solve(String fileName)
+    private SSSPSolution floydWarshall(Double[][] aMatrix, Integer[][] pMatrix)
     {
-        if (!parseInput(fileName))
-        {
-            return null;
-        }
-
-        Double adjacencyMatrix[][] = makeAdjacencyMatrix();
-        Integer predMatrix[][] = makePredecessorMatrix(adjacencyMatrix);
-
-        this.solution = floydWarshall(adjacencyMatrix, predMatrix);
-
-        return findSignInfo(adjacencyMatrix, predMatrix);
-    }
-
-    private RSSolution floydWarshall(Double[][] adjMatrix,
-                                     Integer[][] predMatrix)
-    {
-        Double best[][][] = new Double[2][this.numIntxns][this.numIntxns];
+        Double  best[][][] = new  Double[2][this.numIntxns][this.numIntxns];
         Integer pred[][][] = new Integer[2][this.numIntxns][this.numIntxns];
 
-        best[0] = adjMatrix;
-        best[1] = adjMatrix;
+        best[0] = aMatrix;
+        best[1] = aMatrix;
 
-        pred[0] = predMatrix;
-        pred[1] = predMatrix;
+        pred[0] = pMatrix;
+        pred[1] = pMatrix;
 
         int solnIndex = 0;
 
@@ -156,7 +246,7 @@ public class RoadsScholar
 
                     best[i][u][v] = best[j][u][v];
 
-                    // null represents infinity
+                    // note that null represents infinity
                     if (best[i][u][k] != null && best[i][k][v] != null)
                     {
                         // if this spot is infinite, anything is better
@@ -165,7 +255,8 @@ public class RoadsScholar
                             best[i][u][v] = best[j][u][k] + best[j][k][v];
                             pred[i][u][v] = k;
                         }
-                        else if ((best[j][u][k] + best[j][k][v]) < best[i][u][v])
+                        else if 
+                            ((best[j][u][k] + best[j][k][v]) < best[i][u][v])
                         {
                             best[i][u][v] = best[j][u][k] + best[j][k][v];
                             pred[i][u][v] = k;
@@ -182,11 +273,12 @@ public class RoadsScholar
             }
         }
 
-        return new RSSolution(best[solnIndex], pred[solnIndex]);
+        return new SSSPSolution(best[solnIndex], pred[solnIndex]);
     }
 
     /**
-     *
+     * Makes an adjacency matrix using the internally stored roads.
+     * 
      * @return the adjacency matrix of roads Note: this method works only for
      * undirected graphs
      */
@@ -204,6 +296,7 @@ public class RoadsScholar
             }
         }
 
+        // populate the matrix
         for (int intxn = 0; intxn < this.numIntxns; intxn++)
         {
             for (Road road : this.roads)
@@ -248,64 +341,15 @@ public class RoadsScholar
 
         return pMatrix;
     }
-
-    private void printMatrix(Integer matrix[][])
-    {
-        System.out.println("----");
-
-        String format = "%-3s";
-        System.out.printf(format, " ");
-        for (int i = 0; i < matrix.length; i++)
-        {
-            System.out.printf(format, i);
-        }
-        System.out.println("");
-
-        int k = 0;
-
-        for (Integer j[] : matrix)
-        {
-            System.out.printf(format, k++);
-
-            for (Integer i : j)
-            {
-                String s = "";
-                s += (i == null) ? "-" : (int) Math.ceil(i);
-                System.out.printf(format, s);
-            }
-            System.out.println("");
-        }
-        System.out.println("");
-    }
-
-    private void printMatrix(Double matrix[][])
-    {
-        Integer intArray[][] = new Integer[matrix.length][matrix.length];
-        for (int i = 0; i < intArray.length; i++)
-        {
-            for (int j = 0; j < intArray.length; j++)
-            {
-                intArray[i][j] = (matrix[i][j] != null) ?
-                                 (int) Math.ceil(matrix[i][j]) :
-                                 null;
-            }
-        }
-        printMatrix(intArray);
-    }
-
-    private void printMatrix(String title, Double matrix[][])
-    {
-        System.out.println(title);
-        printMatrix(matrix);
-    }
-
-    private void printMatrix(String title, Integer matrix[][])
-    {
-        System.out.println(title);
-        printMatrix(matrix);
-    }
-
-    private String findSignInfo(Double[][] distances, Integer[][] shortest)
+    
+    /**
+     * Populates each sign with its correct information.
+     * 
+     * @param dists the array of shortest distances
+     * @param pMatrix the predecessor matrix
+     * @return sign info for all signs in the problem
+     */
+    private String findSignInfo(Double[][] dists, Integer[][] pMatrix)
     {
         for (Sign sign : this.signs)
         {
@@ -313,24 +357,29 @@ public class RoadsScholar
             {
                 if (sign.start() != city.intersection())
                 {
-                    int intersect = city.intersection();
+                    int intxn = city.intersection();
                     boolean pathEnd = false;
+                    
                     while (!pathEnd)
                     {
-                        if (shortest[sign.start()][intersect] == sign.end())
+                        // if we find the last element, add the info to the sign
+                        if (pMatrix[sign.start()][intxn] == sign.end())
                         {
-                            Double totalDist = distances[sign.start()][city.intersection()] - sign.length();
-                            long rounded = Math.round(totalDist);
+                            Double totalDist = 
+                                dists[sign.start()][city.intersection()] - sign.length();
+                            double rounded = Math.round(totalDist);
                             sign.addInfo(city.name(), (int) rounded);
                             pathEnd = true;
                         }
-                        else if (shortest[sign.start()][intersect] == sign.start())
+                        // if we find ourself, we're done
+                        else if (pMatrix[sign.start()][intxn] == sign.start())
                         {
                             pathEnd = true;
                         }
+                        // if we're not done, check the next intersection
                         else
                         {
-                            intersect = shortest[sign.start()][intersect];
+                            intxn = pMatrix[sign.start()][intxn];
                         }
                     }
                 }

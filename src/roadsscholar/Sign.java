@@ -1,7 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * This class abstracts the idea of Sign, which inherits from Road.
+ * 
+ * @author Wesley Kelly
+ * @version 1.0
+ *
+ * File: Sign.java 
+ * Created: 15 November 2015
+ *
+ * Copyright 2015 Cedarville University, its Computer Science faculty, and the
+ * authors. All rights reserved.
+ * 
+ * Description: A Sign stores CityDistanceTuples as its data. Signs inherit
+ * from Roads because they live on top of roads and have a start and end point,
+ * the only difference being that a Sign has a different length than the Road
+ * it is on, and also stores information.
  */
 
 package roadsscholar;
@@ -20,6 +32,7 @@ public class Sign extends Road
     
     /**
      * Adds city and distance info to a sign, insertion sorting on the way in.
+     * 
      * @param name the name of the city being added to the sign
      * @param distance the distance to the named city
      */
@@ -36,14 +49,16 @@ public class Sign extends Road
             int size = distanceInfo.size();
             for (int i = 0; i < size; i++)
             {
-                if (distanceInfo.get(i).distance() >= distance)
+                if (distanceInfo.get(i).distance() > distance)
                 {
                     this.distanceInfo.add
                         (i, new CityDistanceTuple(name, distance));
                 }
+                // if the distances are the same, compare the strings
                 else if (distanceInfo.get(i).distance() == distance)
                 {
                     int comp = distanceInfo.get(i).name().compareTo(name);
+                    
                     if (comp == -1)
                     {
                         this.distanceInfo.add
