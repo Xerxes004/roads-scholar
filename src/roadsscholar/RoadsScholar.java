@@ -31,7 +31,12 @@ public class RoadsScholar
     {
         RoadsScholar problem = new RoadsScholar();
         RSSolution solution = problem.solve("input.txt");
-
+        problem.findSignInfo(solution.answer(), solution.predMatrix());
+        for(int i = 0; i < problem.signs.length; i ++)
+        {
+            System.out.println(problem.signs[i].getInfo());
+        }
+        
         problem.printMatrix("Best answer", solution.answer());
         problem.printMatrix("Final Predecessor Matrix", solution.predMatrix());
     }
@@ -109,7 +114,7 @@ public class RoadsScholar
         Integer predMatrix[][] = makePredecessorMatrix(adjacencyMatrix);
 
         RSSolution solution = floydWarshall(adjacencyMatrix, predMatrix);
-
+        
         return solution;
     }
 
@@ -293,4 +298,24 @@ public class RoadsScholar
         printMatrix(matrix);
     }
 
+    private void findSignInfo(Double[][] distances, Integer[][] shortest) 
+    {
+        for(int i = 0; i < this.signs.length; i++)
+        {
+            Sign current = this.signs[i];
+            for(int j = 0; j < this.cities.length; j++)
+            {
+                int cityNum = this.cities[j].intersection();
+                if(current.start() != cityNum) 
+                {
+                    if(shortest[current.start()][cityNum] == current.end())
+                    {
+                        Double totalDist = distances[current.start()][cityNum] - current.length();
+                        long rounded = Math.round(totalDist);
+                        this.signs[i].addInfo(this.cities[j].name(), (int)rounded);
+                    }
+                }
+            }
+        }
+    }
 }
