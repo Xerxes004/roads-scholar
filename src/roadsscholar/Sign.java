@@ -69,6 +69,6 @@ public class Sign extends Road
             info += c.distance() + "\n";
         }
         
-        return info;
+        return info + "\n";
     }
 }

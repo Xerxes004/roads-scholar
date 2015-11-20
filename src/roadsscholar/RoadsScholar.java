@@ -315,12 +315,26 @@ public class RoadsScholar
                 
                 if (sign.start() != cityNum)
                 {
-                    if (shortest[sign.start()][cityNum] == sign.end())
+                    int intersect = cityNum;
+                    boolean pathEnd = false;
+                    while(!pathEnd) 
                     {
-                        Double totalDist = 
-                            distances[sign.start()][cityNum] - sign.length();
-                        int rounded = (int)Math.round(totalDist);
-                        sign.addInfo(city.name(), rounded);
+                        
+                        if(shortest[sign.start()][intersect] == sign.end())
+                        {
+                            Double totalDist = distances[sign.start()][cityNum] - sign.length();
+                            long rounded = Math.round(totalDist);
+                            sign.addInfo(city.name(), (int)rounded);
+                            pathEnd = true;
+                        } 
+                        else if(shortest[sign.start()][intersect] == sign.start()) 
+                        {
+                            pathEnd = true;
+                        }
+                        else
+                        {
+                            intersect = shortest[sign.start()][intersect];
+                        }
                     }
                 }
             }
