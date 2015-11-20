@@ -311,33 +311,15 @@ public class RoadsScholar
         {
             for (City city : this.cities)
             {
-                int cityNum = city.intersection();
-
-                if (sign.start() != cityNum)
+                if (sign.start() != city.intersection())
                 {
-                    int intersect = cityNum;
+                    int intersect = city.intersection();
                     boolean pathEnd = false;
                     while (!pathEnd)
                     {
                         if (shortest[sign.start()][intersect] == sign.end())
                         {
-                            Double totalDist = distances[sign.start()][cityNum] - sign.length();
-                            long rounded = Math.round(totalDist);
-                            sign.addInfo(city.name(), (int) rounded);
-                            pathEnd = true;
-                        }
-                        else if (shortest[sign.start()][intersect] == sign.start())
-                        {
-                            pathEnd = true;
-                        }
-                        else
-                        {
-                            intersect = shortest[sign.start()][intersect];
-                        }
-
-                        if (shortest[sign.start()][intersect] == sign.end())
-                        {
-                            Double totalDist = distances[sign.start()][cityNum] - sign.length();
+                            Double totalDist = distances[sign.start()][city.intersection()] - sign.length();
                             long rounded = Math.round(totalDist);
                             sign.addInfo(city.name(), (int) rounded);
                             pathEnd = true;
