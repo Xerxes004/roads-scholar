@@ -1,7 +1,7 @@
 /**
  * This class solves the Roads Scholar problem.
  * 
- * @author Wesley Kelly
+ * @author Wesley Kelly, James Von Eiff
  * @version 1.0
  *
  * File: RoadsScholar.java 

@@ -1,7 +1,7 @@
 /**
  * This class abstracts the idea of City, which inherits from an intersection.
  * 
- * @author Wesley Kelly
+ * @author Wesley Kelly, James Von Eiff
  * @version 1.0
  *
  * File: City.java 

@@ -1,7 +1,7 @@
 /**
  * This class abstracts the idea of an intersection.
  * 
- * @author Wesley Kelly
+ * @author Wesley Kelly, James Von Eiff
  * @version 1.0
  *
  * File: Intersection.java 

@@ -2,7 +2,7 @@
  * This class encapsulates the solution given by the Floyd-Warshall algorithm
  * to the All Source Shortest Path problem.
  * 
- * @author Wesley Kelly
+ * @author Wesley Kelly, James Von Eiff
  * @version 1.0
  *
  * File: SSSPSolution.java 

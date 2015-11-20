@@ -1,7 +1,7 @@
 /**
  * This class encapsulates a road.
  * 
- * @author Wesley Kelly
+ * @author Wesley Kelly, James Von Eiff
  * @version 1.0
  *
  * File: Road.java 

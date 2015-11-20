@@ -2,7 +2,7 @@
  * This class encapsulates a city name and a distance, and is used to store
  * information in a Sign.
  * 
- * @author Wesley Kelly
+ * @author Wesley Kelly, James Von Eiff
  * @version 1.0
  *
  * File: CityDistanceTuple.java 

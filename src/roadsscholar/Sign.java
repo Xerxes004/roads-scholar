@@ -1,7 +1,7 @@
 /**
  * This class abstracts the idea of Sign, which inherits from Road.
  * 
- * @author Wesley Kelly
+ * @author Wesley Kelly, James Von Eiff
  * @version 1.0
  *
  * File: Sign.java 
