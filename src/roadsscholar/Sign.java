@@ -36,10 +36,25 @@ public class Sign extends Road
             int size = distanceInfo.size();
             for (int i = 0; i < size; i++)
             {
-                if (distanceInfo.get(i).distance() > distance)
+                if (distanceInfo.get(i).distance() >= distance)
                 {
                     this.distanceInfo.add
                         (i, new CityDistanceTuple(name, distance));
+                }
+                else if (distanceInfo.get(i).distance() == distance)
+                {
+                    int comp = distanceInfo.get(i).name().compareTo(name);
+                    if (comp == -1)
+                    {
+                        this.distanceInfo.add
+                            (i, new CityDistanceTuple(name, distance));
+                    } 
+                    else if (comp == 1)
+                    {
+                        this.distanceInfo.add
+                            (i + 1, new CityDistanceTuple(name, distance));
+                    }
+                    // else they're the same and we don't need to re-insert it
                 }
                 else if (i == distanceInfo.size() - 1)
                 {
