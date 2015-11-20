@@ -22,11 +22,25 @@ public class Sign extends Road
     
     public void addInfo(String name, int distance)
     {
-        for (int i = 0; i < distanceInfo.size(); i++)
+        if (this.distanceInfo.isEmpty())
         {
-            if (distanceInfo.get(i).distance() > distance)
+            this.distanceInfo.add(new CityDistanceTuple(name, distance));
+        }
+        else
+        {
+            for (int i = 0; i < distanceInfo.size(); i++)
             {
-                this.distanceInfo.add(i, new CityDistanceTuple(name, distance));
+                if (distanceInfo.get(i).distance() > distance)
+                {
+                    this.distanceInfo.add
+                        (i, new CityDistanceTuple(name, distance));
+                }
+                else if (i == distanceInfo.size() - 1)
+                {
+                    this.distanceInfo.add
+                        (new CityDistanceTuple(name, distance));
+                }
+
             }
         }
     }

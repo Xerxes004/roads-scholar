@@ -30,6 +30,7 @@ public class RoadsScholar
     public static void main(String[] args)
     {
         RoadsScholar problem = new RoadsScholar();
+        
         RSSolution solution = problem.solve("input.txt");
 
         problem.printMatrix("Best answer", solution.answer());
@@ -94,9 +95,9 @@ public class RoadsScholar
     }
 
     /**
-     * 
-     * @param fileName
-     * @return 
+     * Solves the input file.
+     * @param fileName name of input file to solve
+     * @return the sign
      */
     public RSSolution solve(String fileName)
     {
@@ -167,7 +168,7 @@ public class RoadsScholar
         }
 
         return new RSSolution(best[solnIndex], pred[solnIndex]);
-    }
+    }   
 
     /**
      * 
