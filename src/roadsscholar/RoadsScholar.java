@@ -109,15 +109,14 @@ public class RoadsScholar
         Integer predMatrix[][] = makePredecessorMatrix(adjacencyMatrix);
 
         RSSolution solution = floydWarshall(adjacencyMatrix, predMatrix);
-
+        
         return solution;
     }
 
     private RSSolution floydWarshall(Double[][] adjMatrix, Integer[][] predMatrix)
     {
-        int n = adjMatrix.length;
-        Double best[][][] = new Double[2][n][n];
-        Integer pred[][][] = new Integer[2][n][n];
+        Double  best[][][] = new Double [2][this.numIntxns][this.numIntxns];
+        Integer pred[][][] = new Integer[2][this.numIntxns][this.numIntxns];
 
         best[0] = adjMatrix;
         best[1] = adjMatrix;
@@ -125,14 +124,13 @@ public class RoadsScholar
         pred[0] = predMatrix;
         pred[1] = predMatrix;
 
-        int numVertices = adjMatrix.length;
         int solnIndex = 0;
 
-        for (int k = 0; k < numVertices; k++)
+        for (int k = 0; k < this.numIntxns; k++)
         {
-            for (int u = 0; u < numVertices; u++)
+            for (int u = 0; u < this.numIntxns; u++)
             {
-                for (int v = 0; v < numVertices; v++)
+                for (int v = 0; v < this.numIntxns; v++)
                 {
                     // we only need to keep two matrices in memory and swap
                     // between them. i and j alternate.
@@ -159,7 +157,7 @@ public class RoadsScholar
 
                         // Stores the last i value so that the correct answers 
                         // can be sent back to the user.
-                        if (v == numVertices - 1)
+                        if (v == this.numIntxns - 1)
                         {
                             solnIndex = i;
                         }
@@ -180,11 +178,13 @@ public class RoadsScholar
     {
         Double[][] matrix = new Double[this.numIntxns][this.numIntxns];
         
-        for (Double[] matrix1 : matrix)
+        for (int i = 0; i < this.numIntxns; i++)
         {
-            for (int j = 0; j < matrix.length; j++)
+            for (int j = 0; j < this.numIntxns; j++)
             {
-                matrix1[j] = null;
+                // if the indices are the same the distance is 0.0.
+                // otherwise, it's infinite.
+                matrix[i][j] = (i != j) ? null : 0.0;
             }
         }
 
@@ -196,11 +196,6 @@ public class RoadsScholar
                 {
                     matrix[intxn][road.end()] = road.length();
                     matrix[road.end()][intxn] = road.length();
-                }
-                if (intxn == road.end())
-                {
-                    matrix[intxn][road.end()] = 0.0;
-                    matrix[road.end()][intxn] = 0.0;
                 }
             }
         }
@@ -251,6 +246,7 @@ public class RoadsScholar
         System.out.println("");
 
         int k = 0;
+        
         for (Integer j[] : matrix)
         {
             System.out.printf(format, k++);
