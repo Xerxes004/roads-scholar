@@ -7,28 +7,35 @@
 package roadsscholar;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Sign extends Road
 {
     public Sign(int startPoint, int endPoint, Double length)
     {
         super(startPoint, endPoint, length);
-        
         this.distanceInfo = new ArrayList<>();
     }
     
-    private final List<CityDistanceTuple> distanceInfo;
+    private final ArrayList<CityDistanceTuple> distanceInfo;
     
+    /**
+     * Adds city and distance info to a sign, insertion sorting on the way in.
+     * @param name the name of the city being added to the sign
+     * @param distance the distance to the named city
+     */
     public void addInfo(String name, int distance)
     {
+        // if the sign is empty, add it directly
         if (this.distanceInfo.isEmpty())
         {
             this.distanceInfo.add(new CityDistanceTuple(name, distance));
         }
+        // if there are cities already on the sign, insertion sort
         else
         {
-            for (int i = 0; i < distanceInfo.size(); i++)
+            int size = distanceInfo.size();
+            
+            for (int i = 0; i < size; i++)
             {
                 if (distanceInfo.get(i).distance() > distance)
                 {
@@ -40,10 +47,14 @@ public class Sign extends Road
                     this.distanceInfo.add
                         (new CityDistanceTuple(name, distance));
                 }
-
             }
         }
     }
+    
+    /**
+     * Gets the sign info as a string.
+     * @return the sign info
+     */
     public String getInfo()
     {
         String info = "";

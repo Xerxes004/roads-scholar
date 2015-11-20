@@ -2,7 +2,6 @@
 package roadsscholar;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 /**
@@ -17,12 +16,14 @@ public class RoadsScholar
         this.signs = new Sign[0];
         this.numIntxns = 0;
         this.roads = new Road[0];
+        this.solution = null;
     }
 
     private City cities[];
     private Sign signs[];
     private int numIntxns;
     private Road roads[];
+    private RSSolution solution;
 
     /**
      * @param args the command line arguments
@@ -30,18 +31,31 @@ public class RoadsScholar
     public static void main(String[] args)
     {
         RoadsScholar problem = new RoadsScholar();
-        
-        RSSolution solution = problem.solve("input.txt");
 
-        problem.printMatrix("Best answer", solution.answer());
-        problem.printMatrix("Final Predecessor Matrix", solution.predMatrix());
+        String signInfo = problem.solve("input.txt");
+
+        System.out.println(signInfo);
+
+        problem.printMatrix("Best answer", problem.answer());
+        problem.printMatrix("Final Predecessor Matrix", problem.predMatrix());
+    }
+
+    public Double[][] answer()
+    {
+        return this.solution.answer();
+    }
+    
+    public Integer[][] predMatrix()
+    {
+        return this.solution.predMatrix();
     }
 
     /**
-     * Parses the file specified.
+     * Parses the file specified. This method assumes that the input file is 
+     * correct
+     * 
      * @param fileName the name of the input file
-     * @return whether the method failed or not
-     * Note: this method assumes that the input file is correct
+     * @return whether the method failed or not 
      */
     private boolean parseInput(String fileName)
     {
@@ -52,7 +66,7 @@ public class RoadsScholar
             this.numIntxns = in.nextInt();
             this.roads = new Road[in.nextInt()];
             this.cities = new City[in.nextInt()];
-            
+
             for (int i = 0; i < this.roads.length; i++)
             {
                 int start = in.nextInt();
@@ -84,7 +98,7 @@ public class RoadsScholar
                 this.signs[i] = new Sign(start, end, length);
             }
         }
-        // lazy catch statement
+        // lazy catch statement because computer science is hard
         catch (Exception e)
         {
             System.out.println(e.getMessage());
@@ -96,10 +110,11 @@ public class RoadsScholar
 
     /**
      * Solves the input file.
+     * 
      * @param fileName name of input file to solve
      * @return the sign
      */
-    public RSSolution solve(String fileName)
+    public String solve(String fileName)
     {
         if (!parseInput(fileName))
         {
@@ -109,14 +124,15 @@ public class RoadsScholar
         Double adjacencyMatrix[][] = makeAdjacencyMatrix();
         Integer predMatrix[][] = makePredecessorMatrix(adjacencyMatrix);
 
-        RSSolution solution = floydWarshall(adjacencyMatrix, predMatrix);
-        
-        return solution;
+        this.solution = floydWarshall(adjacencyMatrix, predMatrix);
+
+        return findSignInfo(adjacencyMatrix, predMatrix);
     }
 
-    private RSSolution floydWarshall(Double[][] adjMatrix, Integer[][] predMatrix)
+    private RSSolution floydWarshall(Double[][] adjMatrix,
+                                     Integer[][] predMatrix)
     {
-        Double  best[][][] = new Double [2][this.numIntxns][this.numIntxns];
+        Double best[][][] = new Double[2][this.numIntxns][this.numIntxns];
         Integer pred[][][] = new Integer[2][this.numIntxns][this.numIntxns];
 
         best[0] = adjMatrix;
@@ -149,8 +165,7 @@ public class RoadsScholar
                             best[i][u][v] = best[j][u][k] + best[j][k][v];
                             pred[i][u][v] = k;
                         }
-                        else if 
-                            ((best[j][u][k] + best[j][k][v]) < best[i][u][v])
+                        else if ((best[j][u][k] + best[j][k][v]) < best[i][u][v])
                         {
                             best[i][u][v] = best[j][u][k] + best[j][k][v];
                             pred[i][u][v] = k;
@@ -168,17 +183,17 @@ public class RoadsScholar
         }
 
         return new RSSolution(best[solnIndex], pred[solnIndex]);
-    }   
+    }
 
     /**
-     * 
-     * @return the adjacency matrix of roads
-     * Note: this method works only for undirected graphs
+     *
+     * @return the adjacency matrix of roads Note: this method works only for
+     * undirected graphs
      */
     private Double[][] makeAdjacencyMatrix()
     {
         Double[][] matrix = new Double[this.numIntxns][this.numIntxns];
-        
+
         for (int i = 0; i < this.numIntxns; i++)
         {
             for (int j = 0; j < this.numIntxns; j++)
@@ -247,7 +262,7 @@ public class RoadsScholar
         System.out.println("");
 
         int k = 0;
-        
+
         for (Integer j[] : matrix)
         {
             System.out.printf(format, k++);
@@ -271,8 +286,8 @@ public class RoadsScholar
             for (int j = 0; j < intArray.length; j++)
             {
                 intArray[i][j] = (matrix[i][j] != null) ?
-                     (int) Math.ceil(matrix[i][j]) :
-                     null;
+                                 (int) Math.ceil(matrix[i][j]) :
+                                 null;
             }
         }
         printMatrix(intArray);
@@ -290,4 +305,34 @@ public class RoadsScholar
         printMatrix(matrix);
     }
 
+    private String findSignInfo(Double[][] distances, Integer[][] shortest)
+    {
+        for (Sign sign : this.signs)
+        {
+            for (City city : this.cities)
+            {
+                int cityNum = city.intersection();
+                
+                if (sign.start() != cityNum)
+                {
+                    if (shortest[sign.start()][cityNum] == sign.end())
+                    {
+                        Double totalDist = 
+                            distances[sign.start()][cityNum] - sign.length();
+                        int rounded = (int)Math.round(totalDist);
+                        sign.addInfo(city.name(), rounded);
+                    }
+                }
+            }
+        }
+        
+        String signInfo = "";
+        
+        for (Sign sign : this.signs)
+        {
+            signInfo += sign.getInfo();
+        }
+        
+        return signInfo;
+    }
 }
