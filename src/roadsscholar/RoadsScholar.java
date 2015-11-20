@@ -81,7 +81,7 @@ public class RoadsScholar
 
         this.solution = floydWarshall(adjacencyMatrix, predMatrix);
 
-        return findSignInfo(adjacencyMatrix, predMatrix);
+        return findSignInfo(solution.answer(), solution.predMatrix());
     }
     
      /**
