@@ -44,18 +44,18 @@ public class RoadsScholar
     {
         return this.solution.answer();
     }
-    
+
     public Integer[][] predMatrix()
     {
         return this.solution.predMatrix();
     }
 
     /**
-     * Parses the file specified. This method assumes that the input file is 
+     * Parses the file specified. This method assumes that the input file is
      * correct
-     * 
+     *
      * @param fileName the name of the input file
-     * @return whether the method failed or not 
+     * @return whether the method failed or not
      */
     private boolean parseInput(String fileName)
     {
@@ -110,7 +110,7 @@ public class RoadsScholar
 
     /**
      * Solves the input file.
-     * 
+     *
      * @param fileName name of input file to solve
      * @return the sign
      */
@@ -312,21 +312,21 @@ public class RoadsScholar
             for (City city : this.cities)
             {
                 int cityNum = city.intersection();
-                
+
                 if (sign.start() != cityNum)
                 {
                     int intersect = cityNum;
                     boolean pathEnd = false;
-                    while(!pathEnd) 
+                    while (!pathEnd)
                     {
-                        if(shortest[sign.start()][intersect] == sign.end())
+                        if (shortest[sign.start()][intersect] == sign.end())
                         {
                             Double totalDist = distances[sign.start()][cityNum] - sign.length();
                             long rounded = Math.round(totalDist);
-                            sign.addInfo(city.name(), (int)rounded);
+                            sign.addInfo(city.name(), (int) rounded);
                             pathEnd = true;
-                        } 
-                        else if(shortest[sign.start()][intersect] == sign.start()) 
+                        }
+                        else if (shortest[sign.start()][intersect] == sign.start())
                         {
                             pathEnd = true;
                         }
@@ -335,14 +335,14 @@ public class RoadsScholar
                             intersect = shortest[sign.start()][intersect];
                         }
 
-                        if(shortest[sign.start()][intersect] == sign.end())
+                        if (shortest[sign.start()][intersect] == sign.end())
                         {
                             Double totalDist = distances[sign.start()][cityNum] - sign.length();
                             long rounded = Math.round(totalDist);
-                            sign.addInfo(city.name(), (int)rounded);
+                            sign.addInfo(city.name(), (int) rounded);
                             pathEnd = true;
-                        } 
-                        else if(shortest[sign.start()][intersect] == sign.start()) 
+                        }
+                        else if (shortest[sign.start()][intersect] == sign.start())
                         {
                             pathEnd = true;
                         }
@@ -354,14 +354,14 @@ public class RoadsScholar
                 }
             }
         }
-        
+
         String signInfo = "";
-        
+
         for (Sign sign : this.signs)
         {
             signInfo += sign.getInfo();
         }
-        
+
         return signInfo;
     }
 }
