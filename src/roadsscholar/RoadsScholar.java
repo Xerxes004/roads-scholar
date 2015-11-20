@@ -319,7 +319,22 @@ public class RoadsScholar
                     boolean pathEnd = false;
                     while(!pathEnd) 
                     {
-                        
+                        if(shortest[sign.start()][intersect] == sign.end())
+                        {
+                            Double totalDist = distances[sign.start()][cityNum] - sign.length();
+                            long rounded = Math.round(totalDist);
+                            sign.addInfo(city.name(), (int)rounded);
+                            pathEnd = true;
+                        } 
+                        else if(shortest[sign.start()][intersect] == sign.start()) 
+                        {
+                            pathEnd = true;
+                        }
+                        else
+                        {
+                            intersect = shortest[sign.start()][intersect];
+                        }
+
                         if(shortest[sign.start()][intersect] == sign.end())
                         {
                             Double totalDist = distances[sign.start()][cityNum] - sign.length();

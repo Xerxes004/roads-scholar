@@ -34,7 +34,6 @@ public class Sign extends Road
         else
         {
             int size = distanceInfo.size();
-            
             for (int i = 0; i < size; i++)
             {
                 if (distanceInfo.get(i).distance() > distance)
