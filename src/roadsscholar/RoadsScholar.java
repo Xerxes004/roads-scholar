@@ -35,7 +35,7 @@ public class RoadsScholar
     private Sign signs[];
     private int numIntxns;
     private Road roads[];
-    private SSSPSolution solution;
+    private ASSPSolution solution;
 
     /**
      * @param args the command line arguments
@@ -218,9 +218,9 @@ public class RoadsScholar
      * 
      * @param aMatrix the initial Double[][] adjacency matrix of the graph
      * @param pMatrix the initial Integer[][] predecessor matrix of the graph
-     * @return the SSSPSolution form of the solution to the inputs
+     * @return the ASSPSolution form of the solution to the inputs
      */
-    private SSSPSolution floydWarshall(Double[][] aMatrix, Integer[][] pMatrix)
+    private ASSPSolution floydWarshall(Double[][] aMatrix, Integer[][] pMatrix)
     {
         Double  best[][][] = new  Double[2][this.numIntxns][this.numIntxns];
         Integer pred[][][] = new Integer[2][this.numIntxns][this.numIntxns];
@@ -273,7 +273,7 @@ public class RoadsScholar
             }
         }
 
-        return new SSSPSolution(best[solnIndex], pred[solnIndex]);
+        return new ASSPSolution(best[solnIndex], pred[solnIndex]);
     }
 
     /**
